@@ -1,0 +1,57 @@
+﻿<!doctype html>
+<html>
+    <head lang="ru">
+        <meta charset="utf-8" />
+        <title>Табло аэропорта</title>
+        <style>
+            table {
+                border-collapse: collapse;
+            }
+            td {
+                border: 1px solid black;
+            }
+            th {
+                border: 2px solid black;
+            }
+            td span {
+                vertical-align: central;
+            }
+            th.aircompany_name, td.aircompany_name {
+                border-right: none;
+            }
+            th.aircompany_logo, td.aircompany_logo {
+                border-left: none;
+            }
+        </style>
+    </head>
+    <body>
+        <table>
+            <thead>
+                <tr>
+                    <th>Тип рейса</th>
+                    <th>№ рейса</th>
+                    <th class="aircompany_name">Авиакомпания</th>
+                    <th class="aircompany_logo"></th>
+                    <th>Тип воздушного судна</th>
+                    <th>Аэропорт назначения</th>
+                    <th>Плановое время</th>
+                    <th>Статус рейса</th>
+                    <th>Примечание</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Вылет</td>
+                    <td>АВ 1234</td>
+                    <td class="aircompany_name">Аэрофлот</td>
+                    <td class="aircompany_logo"><img src="logos/aeroflot.jpg" /></td>
+                    <td>Ту-204-100В</td>
+                    <td>Нижний Новгород</td>
+                    <td>10:30</td>
+                    <td>Регистрация</td>
+                    <td></td>
+                </tr>
+            </tbody>
+        </table>
+    </body>
+</html>
