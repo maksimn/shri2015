@@ -17,25 +17,22 @@
                 padding: 5px;
                 border: 1px solid black;
             }
+            th {
+                background-color: white;
+            }
             th.aircompany_name, td.aircompany_name {
                 border-right: none;
             }
             th.aircompany_logo, td.aircompany_logo {
                 border-left: none;
-            }
-            
+            }            
             tbody tr:nth-of-type(odd) {
                 background-color: #A4D3EE;
             }
             tbody tr:nth-of-type(even) {
                 background-color: #B0E2FF;
             }
-            
-            tbody tr:hover {
-                background-color: yellow;
-            }
-             
-            .highlighted {
+            tbody tr:hover, .highlighted {
                 background-color: yellow;
             }
         </style>
@@ -52,24 +49,42 @@
             $(function () {
                 for (var i = 1; i < 9; i++) {
                     highlightColumn(".col" + i);
-                }
+                    $(".uhcol" + i).width($(".hcol" + i).width() + 1);
+                }                
+                $(".uhcol3").width($(".hcol3").width() + 52); // 52 - ширина самого большого логотипа, - 1 -учет лишнего бордера
             });
         </script>
     </head>
-    <body>
-        <div align="center">
+    <body>       
+        <div>
+            <div style="position:fixed; top: 0;">
+                <table>
+                    <thead>
+                        <tr>
+                            <th class="uhcol1">Тип рейса</th>
+                            <th class="uhcol2">№ рейса</th>
+                            <th class="uhcol3 aircompany_name" colspan="2">Авиакомпания</th>
+                            <th class="uhcol4">Тип воздушного судна</th>
+                            <th class="uhcol5">Аэропорт назначения</th>
+                            <th class="uhcol6">Плановое время</th>
+                            <th class="uhcol7">Статус рейса</th>
+                            <th class="uhcol8">Примечание</th>
+                        </tr>
+                    </thead>
+                </table>
+            </div>
             <table>
                 <caption>Табло аэропорта</caption>
                 <thead>
                     <tr>
-                        <th>Тип рейса</th>
-                        <th>№ рейса</th>
-                        <th class="aircompany_name" colspan="2">Авиакомпания</th>
-                        <th>Тип воздушного судна</th>
-                        <th>Аэропорт назначения</th>
-                        <th>Плановое время</th>
-                        <th>Статус рейса</th>
-                        <th>Примечание</th>
+                        <th class="hcol1">Тип рейса</th>
+                        <th class="hcol2">№ рейса</th>
+                        <th class="hcol3 aircompany_name" colspan="2">Авиакомпания</th>
+                        <th class="hcol4">Тип воздушного судна</th>
+                        <th class="hcol5">Аэропорт назначения</th>
+                        <th class="hcol6">Плановое время</th>
+                        <th class="hcol7">Статус рейса</th>
+                        <th class="hcol8">Примечание</th>
                     </tr>
                 </thead>
                 <tbody>
