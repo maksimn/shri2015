@@ -4,6 +4,11 @@
         <meta charset="utf-8" />
         <title>Табло аэропорта</title>
         <style>
+            * {
+                -moz-box-sizing: border-box;
+                -webkit-box-sizing: border-box;
+                box-sizing: border-box;
+            }
             table {
                 text-align: center;
                 border-collapse: collapse;
@@ -28,7 +33,7 @@
             }
             td.col4, th.hcol4, th.uhcol4 {
                 border-left: none;
-            }            
+            }
             tbody tr:nth-of-type(odd) {
                 background-color: #A4D3EE;
             }
@@ -41,31 +46,38 @@
         </style>
         <script src="scripts/jquery-1.8.3.min.js"></script>
         <script>
+            function initMarkup() {
+                for (var i = 1; i <= 9; i++) {
+                    highlightColumn(".col" + i);
+                }
+                alignFloatingHeader();
+                $("#head").css("visibility", "hidden");
+            }
             function highlightColumn(s) {
                 $(s).mouseenter(function () { $(s).addClass("highlighted"); });
                 $(s).mouseleave(function () { $(s).removeClass("highlighted"); });
             }
-            $(function () {
+            function alignFloatingHeader() {
                 for (var i = 1; i <= 9; i++) {
-                    highlightColumn(".col" + i);
-                    if (i != 4) {
-                        $(".uhcol" + i).width($(".hcol" + i).width() + 1);
-                    } else {
-                        $(".uhcol" + i).width($(".hcol" + i).width());
-                    }
-                }        
-                $("#head").css("visibility", "hidden");
+                    $(".uhcol" + i).width($(".hcol" + i).width());
+                }
+            }
+            function showOrHideHeaderWhileScrolling() {
+                if ($(".hcol1").offset().top > $(window).scrollTop()) {
+                    $("#head").css("visibility", "hidden");
+                } else {
+                    $("#head").css("visibility", "visible");
+                }
+            }
+            $(function () {
+                initMarkup();
                 $(window).scroll(function () {
-                    if ($(".hcol1").offset().top > $(window).scrollTop()) {
-                        $("#head").css("visibility", "hidden");
-                    } else {
-                        $("#head").css("visibility", "visible");
-                    }
+                    showOrHideHeaderWhileScrolling();
                 });
             });
         </script>
     </head>
-    <body>       
+    <body>
         <div>
             <div id="head" style="position:fixed; top: 0;">
                 <table>
@@ -344,6 +356,6 @@
                     </tr>
                 </tbody>
             </table>
-        </div>       
+        </div>
     </body>
 </html>
