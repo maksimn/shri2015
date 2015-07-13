@@ -25,14 +25,14 @@
             th {
                 background-color: white;
             }
-            .col4, .hcol4, .uhcol4 {
+            .col4, .hcol4 {
                 width: 75px;
             }
-            td.col3, th.hcol3, th.uhcol3 {
-                border-right: none;
+            .col3, .hcol3 {
+                border-right-color: transparent;
             }
-            td.col4, th.hcol4, th.uhcol4 {
-                border-left: none;
+            .col4, .hcol4 {
+                border-left-color: transparent;
             }
             tbody tr:nth-of-type(odd) {
                 background-color: #A4D3EE;
@@ -51,7 +51,7 @@
         <script>
             function initMarkup() {
                 for (var i = 1; i <= 9; i++) {
-                    highlightColumn(".col" + i);
+                    highlightColumn("td.col" + i);
                 }
                 alignFloatingHeader();
             }
@@ -61,11 +61,11 @@
             }
             function alignFloatingHeader() {
                 for (var i = 1; i <= 9; i++) {
-                    $(".uhcol" + i).width($(".hcol" + i).width());
+                    $(".hcol" + i).width($(".col" + i).width());
                 }
             }
             function showOrHideHeaderWhileScrolling() {
-                if ($(".hcol1").offset().top > $(window).scrollTop()) {
+                if ($("th.col1").offset().top > $(window).scrollTop()) {
                     $("#head").css("visibility", "hidden");
                 } else {
                     $("#head").css("visibility", "visible");
@@ -86,15 +86,15 @@
                 <table>
                     <thead>
                         <tr>
-                            <th class="uhcol1">Тип рейса</th>
-                            <th class="uhcol2">№ рейса</th>
-                            <th class="uhcol3">Авиакомпания</th>
-                            <th class="uhcol4"></th>
-                            <th class="uhcol5">Тип воздушного судна</th>
-                            <th class="uhcol6">Аэропорт назначения</th>
-                            <th class="uhcol7">Плановое время</th>
-                            <th class="uhcol8">Статус рейса</th>
-                            <th class="uhcol9">Примечание</th>
+                            <th class="hcol1">Тип рейса</th>
+                            <th class="hcol2">№ рейса</th>
+                            <th class="hcol3">Авиакомпания</th>
+                            <th class="hcol4"></th>
+                            <th class="hcol5">Тип воздушного судна</th>
+                            <th class="hcol6">Аэропорт назначения</th>
+                            <th class="hcol7">Плановое время</th>
+                            <th class="hcol8">Статус рейса</th>
+                            <th class="hcol9">Примечание</th>
                         </tr>
                     </thead>
                 </table>
@@ -103,15 +103,15 @@
                 <caption>Табло аэропорта</caption>
                 <thead>
                     <tr>
-                        <th class="hcol1">Тип рейса</th>
-                        <th class="hcol2">№ рейса</th>
-                        <th class="hcol3">Авиакомпания</th>
-                        <th class="hcol4"></th>
-                        <th class="hcol5">Тип воздушного судна</th>
-                        <th class="hcol6">Аэропорт назначения</th>
-                        <th class="hcol7">Плановое время</th>
-                        <th class="hcol8">Статус рейса</th>
-                        <th class="hcol9">Примечание</th>
+                        <th class="col1">Тип рейса</th>
+                        <th class="col2">№ рейса</th>
+                        <th class="col3">Авиакомпания</th>
+                        <th class="col4"></th>
+                        <th class="col5">Тип воздушного судна</th>
+                        <th class="col6">Аэропорт назначения</th>
+                        <th class="col7">Плановое время</th>
+                        <th class="col8">Статус рейса</th>
+                        <th class="col9">Примечание</th>
                     </tr>
                 </thead>
                 <tbody>
