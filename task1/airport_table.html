@@ -43,6 +43,9 @@
             tbody tr:hover, .highlighted {
                 background-color: yellow;
             }
+            #head {
+                visibility: hidden;
+            }
         </style>
         <script src="scripts/jquery-1.8.3.min.js"></script>
         <script>
@@ -51,7 +54,6 @@
                     highlightColumn(".col" + i);
                 }
                 alignFloatingHeader();
-                $("#head").css("visibility", "hidden");
             }
             function highlightColumn(s) {
                 $(s).mouseenter(function () { $(s).addClass("highlighted"); });
