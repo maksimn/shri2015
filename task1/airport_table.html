@@ -41,6 +41,29 @@
                 border: 1px solid black;
                 padding: 0;
             }
+            div.popup {
+                position: fixed;
+                left: 50%;
+                top: 30%;
+                width: 350px;
+                padding: 10px;
+                margin-left: -210px;
+                background: #f2efdf;
+                box-shadow: 0 3px 10px rgba(0, 0, 0, 6);
+                visibility: hidden;
+            }
+            .close {
+                cursor: default;
+                font-size: 20px;
+                font-family: Helvetica;
+                text-align: center;
+                line-height: 18px;
+                width: 20px;
+                height: 20px;
+                background: red;
+                position: absolute;
+                right: 5px;
+            }
         </style>
         <script src="scripts/jquery-1.8.3.min.js"></script>
         <script>
@@ -69,9 +92,9 @@
             }
             function responsiveTable() {
                 var w = $(window).width();
-                if (w >= 1200) {
+                if (w >= 1175) {
                     expandColumn(".col4, .col1, .col8, .col3, .col5, .col9");
-                } else if (w < 1200 && w >= 1000) {
+                } else if (w < 1175 && w >= 1000) {
                     collapseColumn(".col9");
                     expandColumn(".col4, .col1, .col8, .col3, .col5");
                 } else if (w < 1000 && w >= 800) {
@@ -90,12 +113,35 @@
                     collapseColumn(".col4, .col1, .col8, .col3, .col5, .col9");
                 }
             }
+            function showPopup() {
+                var ths = $("th div");
+                var tds = $(event.target.parentElement).children();
+                for (var i = 0, n = ths.length; i < n; i++) {
+                    $("div.popup div").append("<b>" + ths[i].innerHTML + ":</b> " + tds[i].innerHTML + "<br />");
+                }
+                $("div.popup").css("visibility", "visible");
+            }
+            function hidePopup() {
+                $("div.popup div").html("");
+                $("div.popup").css("visibility", "hidden");
+            }
             $(function () {
                 initMarkup();
                 $(window).scroll(function () {
                     positioningHeaderWhileScrolling();
                 }).resize(function () {
                     responsiveTable();
+                });
+                var is_tr_clicked = false;
+                $("tbody tr").click(function (event) {
+                    if (!is_tr_clicked) {
+                        is_tr_clicked = true;
+                        showPopup();
+                    }                    
+                });
+                $(".close").click(function () {
+                    is_tr_clicked = false;
+                    hidePopup();
                 });
             });
         </script>
@@ -361,5 +407,9 @@
                 </tr>
             </tbody>
         </table>
+        <div class="popup">
+            <span class="close">x</span>
+            <div></div>
+        </div>
     </body>
 </html>
