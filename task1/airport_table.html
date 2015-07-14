@@ -13,10 +13,13 @@
                 text-align: center;
                 border-collapse: collapse;
             }
-            table caption {
+            caption {
                 font-size: 200%;
                 font-weight: bold;
                 margin: 10px;
+            }
+            label {
+                font-size: 16px;
             }
             td {
                 padding: 5px;
@@ -85,10 +88,10 @@
                 }
             }
             function collapseColumn(col) {
-                $(col).css("position", "absolute").css("visibility", "hidden");
+                $(col).hide();
             }
             function expandColumn(col) {
-                $(col).css("position", "static").css("visibility", "visible");
+                $(col).show();
             }
             function responsiveTable() {
                 var w = $(window).width();
@@ -143,12 +146,30 @@
                     is_tr_clicked = false;
                     hidePopup();
                 });
+                $("#departures").change(function() {
+                    if ($("#departures:checked").length == 0) { // Скрыть все строки с вылетами
+                        $('td:contains("Вылет")').parent().hide();
+                    } else {
+                        $('td:contains("Вылет")').parent().show();
+                    }
+                });
+                $("#arrivals").change(function () {
+                    if ($("#arrivals:checked").length == 0) { // Скрыть все строки 
+                        $('td:contains("Прилёт")').parent().hide();
+                    } else {
+                        $('td:contains("Прилёт")').parent().show();
+                    }
+                });
             });
         </script>
     </head>
     <body>
         <table>
-            <caption>Табло аэропорта</caption>
+            <caption>
+                Табло аэропорта<br />
+                <input id="departures" type="checkbox" checked /><label>Вылеты </label>
+                <input id="arrivals" type="checkbox" checked /><label>Прилёты </label>
+            </caption>
             <thead>
                 <tr>
                     <th class="col1"><div>Тип рейса</div></th>
