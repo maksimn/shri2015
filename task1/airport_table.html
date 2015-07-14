@@ -44,28 +44,58 @@
         </style>
         <script src="scripts/jquery-1.8.3.min.js"></script>
         <script>
-            var initHeaderPos = 0;
             function initMarkup() {
                 for (var i = 1; i <= 9; i++) {
                     highlightColumn("td.col" + i);
                 }
+                responsiveTable();
             }
             function highlightColumn(s) {
                 $(s).mouseenter(function () { $(s).addClass("highlighted"); });
                 $(s).mouseleave(function () { $(s).removeClass("highlighted"); });
             } 
             function positioningHeaderWhileScrolling() {
-                if ($(window).scrollTop() > initHeaderPos) {
-                   $("th div").css("top", ($(window).scrollTop() - initHeaderPos) + "px");
+                if ($(window).scrollTop() > $("th.col1").offset().top) {
+                    $("th div").css("top", ($(window).scrollTop() - $("th.col1").offset().top - 1) + "px");
                 } else {
                     $("th div").css("top", "0");
                 }
             }
+            function collapseColumn(col) {
+                $(col).css("position", "absolute").css("visibility", "hidden");
+            }
+            function expandColumn(col) {
+                $(col).css("position", "static").css("visibility", "visible");
+            }
+            function responsiveTable() {
+                var w = $(window).width();
+                if (w >= 1200) {
+                    expandColumn(".col4, .col1, .col8, .col3, .col5, .col9");
+                } else if (w < 1200 && w >= 1000) {
+                    collapseColumn(".col9");
+                    expandColumn(".col4, .col1, .col8, .col3, .col5");
+                } else if (w < 1000 && w >= 800) {
+                    collapseColumn(".col5, .col9");
+                    expandColumn(".col4, .col1, .col8, .col3");
+                } else if (w < 800 && w >= 700) {
+                    collapseColumn(".col3, .col5, .col9");
+                    expandColumn(".col4, .col1, .col8");
+                } else if (w < 700 && w >= 550) {
+                    collapseColumn(".col8, .col3, .col5, .col9");
+                    expandColumn(".col4, .col1");
+                } else if (w < 550 && w >= 450) {
+                    collapseColumn(".col1, .col8, .col3, .col5, .col9");
+                    expandColumn(".col4");
+                } else if (w < 450) {
+                    collapseColumn(".col4, .col1, .col8, .col3, .col5, .col9");
+                }
+            }
             $(function () {
                 initMarkup();
-                initHeaderPos = $("th.col1 div").offset().top;
                 $(window).scroll(function () {
                     positioningHeaderWhileScrolling();
+                }).resize(function () {
+                    responsiveTable();
                 });
             });
         </script>
