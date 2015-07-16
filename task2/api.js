@@ -46,15 +46,27 @@ function getData(url, callback) {
  */
 var requests = ['/countries', '/cities', '/populations'];
 var responses = {};
- 
+
+// Ошибка в первоначальном коде имеет следующее происхождение. В API функции getData() происходит
+// обратный вызов, выполняемый через вызов функции setTimeout(), так что исполнение кода становится 
+// асинхронным.
+// При этом код функции обратного вызова привязан к определенным вне него переменным (request, i, 
+// requests, responses), а в случае асинхронного выполнения кода это означает, что мы не можем 
+// полагаться на то, что эти переменные будут последовательно иметь значения, которые следовало бы
+// ожидать в случае синхронного выполнения кода.
+// Исправление ошибки может быть в том, чтобы переструктурировать код так, чтобы ввести значения  
+// этих переменных в логику вызова функции.
 for (i = 0; i < 3; i++) {
+    g(i);
+}
+function g(i) {
     var request = requests[i];
     var callback = function (error, result) {
         responses[request] = result;
         var l = [];
         for (K in responses)
             l.push(K);
- 
+
         if (l.length == 3) {
             var c = [], cc = [], p = 0;
             for (i = 0; i < responses['/countries'].length; i++) {
@@ -62,7 +74,7 @@ for (i = 0; i < 3; i++) {
                     c.push(responses['/countries'][i].name);
                 }
             }
- 
+
             for (i = 0; i < responses['/cities'].length; i++) {
                 for (j = 0; j < c.length; j++) {
                     if (responses['/cities'][i].country === c[j]) {
@@ -70,7 +82,7 @@ for (i = 0; i < 3; i++) {
                     }
                 }
             }
- 
+
             for (i = 0; i < responses['/populations'].length; i++) {
                 for (j = 0; j < cc.length; j++) {
                     if (responses['/populations'][i].name === cc[j]) {
@@ -78,10 +90,10 @@ for (i = 0; i < 3; i++) {
                     }
                 }
             }
- 
+
             console.log('Total population in African cities: ' + p);
         }
     };
- 
+
     getData(request, callback);
 }
