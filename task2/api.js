@@ -54,8 +54,8 @@ var responses = {};
 // requests, responses), а в случае асинхронного выполнения кода это означает, что мы не можем 
 // полагаться на то, что эти переменные будут последовательно иметь значения, которые следовало бы
 // ожидать в случае синхронного выполнения кода.
-// Исправление ошибки может быть в том, чтобы переструктурировать код так, чтобы ввести значения  
-// этих переменных в логику вызова функции.
+// Исправление ошибки может быть в том, чтобы переструктурировать код -- ввести значения  
+// этих переменных или нужную логику внутрь логики вызова функции (обратного вызова).
 for (i = 0; i < 3; i++) {
     g(i);
 }
@@ -97,3 +97,25 @@ function g(i) {
 
     getData(request, callback);
 }
+
+// Вторая часть задачи:
+function f() {
+    function callback(error, result) {
+        var name = prompt("Enter a name of a city", "");
+        var isCityFound = false;
+        for (var i = 0; i < result.length; i++) {
+            if (result[i].name == name) {
+                isCityFound = true;
+                alert("Population of " + result[i].name + ": " + result[i].count);
+                //console.log("Population of " + result[i].name + ": " + result[i].count);
+                break;
+            }
+        }
+        if (!isCityFound) {
+            alert("The city not found.");
+            //console.log("The city not found.");
+        }
+    };
+    getData("/populations", callback);
+}
+f();
