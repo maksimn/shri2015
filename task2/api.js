@@ -100,22 +100,59 @@ function g(i) {
 
 // Вторая часть задачи:
 function f() {
+    var isCountry = false;
+    var isCity = false;
+    var cities = [];
+    var name;
+    function isCountryCallback(error, result) {
+        name = prompt("Enter a name of a city or a country", "");
+        if (name !== null) {            
+            for (var i = 0; i < result.length; i++) {
+                if (result[i].country == name) {
+                    isCountry = true;
+                    break;
+                }
+            } // Здесь мы знаем, страна ли это и показать численность её
+            if (isCountry) {
+                for (var i = 0; i < result.length; i++) {
+                    if (result[i].country == name) {
+                        cities.push(result[i].name)
+                    }
+                }
+                getData('/populations', countryPopulation);
+                isCountry = false;
+                getData('/cities', isCountryCallback);
+            } else {
+                getData("/populations", callback);
+                isCity = false;
+                getData('/cities', isCountryCallback);
+            }
+        }               
+    }
+    function countryPopulation(error, result) {
+        var p = 0;
+        for (var i = 0; i < cities.length; i++) {
+            for (var j = 0; j < result.length; j++) {
+                if(result[j].name == cities[i]) {
+                    p += result[j].count;
+                }
+            }
+        }
+        alert(name + " population: " + p);
+    }
     function callback(error, result) {
-        var name = prompt("Enter a name of a city", "");
-        var isCityFound = false;
+        isCity = false;
         for (var i = 0; i < result.length; i++) {
             if (result[i].name == name) {
-                isCityFound = true;
+                isCity = true;
                 alert("Population of " + result[i].name + ": " + result[i].count);
-                //console.log("Population of " + result[i].name + ": " + result[i].count);
                 break;
             }
         }
-        if (!isCityFound) {
-            alert("The city not found.");
-            //console.log("The city not found.");
+        if (!isCity) {
+            alert("The city or country is not found.");
         }
     };
-    getData("/populations", callback);
+    getData('/cities', isCountryCallback);
 }
 f();
