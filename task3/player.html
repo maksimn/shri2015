@@ -46,6 +46,7 @@
         var audioBuffer;
         var audioCtx = new (window.AudioContext || window.webkitAudioContext)();
         var source;
+        var audiostart, audiostop, playedtime, isPlaying = false;
         function dragAndDropInit() {
             $(".audio_player").draggable();
         }
@@ -54,11 +55,13 @@
             inputFileElement.onchange = function () {
                 file = inputFileElement.files[0];              
                 loadAndReadFile();
+                if (isPlaying) {
+                    source.stop(0);
+                }
             }
         }
         function loadAndReadFile() {
             var fileReader = new FileReader();
-            var audiostart, audiostop, playedtime = 0.0, isPlaying = false;
             fileReader.readAsArrayBuffer(file);
             fileReader.onloadend = function () {
                 arrayBuffer = fileReader.result;                
@@ -72,6 +75,7 @@
                     source.start(0);
                     audiostart = audioCtx.currentTime;
                     isPlaying = true;
+                    playedtime = 0.0;
                 });                
                 $("#play").click(function () {
                     if (!isPlaying) {
@@ -97,6 +101,20 @@
         $(function () {
             dragAndDropInit();
             openFile();
+
+            for (var i = 0; i < 32; i++) {
+                var div = $('<span/>').appendTo('#visualizer');
+                div.css({
+                    verticalAlign: 'top',
+                    display: 'inline-block',
+                    fontSize: 0,
+                    lineHeight: 0,
+                    width: '5px',
+                    height: 64 - Math.round(i * 64 / 32) + 'px',
+                    background: '#363636',
+                    borderBottom: '2px solid red'
+                });
+            }
         });
     </script>
 </head>
@@ -108,6 +126,7 @@
         <input type="image" src="img/play.png" class="openFileButton" id="play" />
         <input type="image" src="img/stop.png" class="openFileButton" id="stop" />
         <div id="filename" style="position: relative; top: 8px; left: 8px; font-family: Arial, Helvetica, sans-serif; background-color: white; border-radius: 3px; width: 180px;">...File Name...</div>
+        <div id="visualizer" style="position: relative; top: 16px; left: 16px; background-color: yellow; border: 1px solid white; width: 160px; height: 64px; overflow: hidden"></div>
     </div>
 </body>
 </html>
