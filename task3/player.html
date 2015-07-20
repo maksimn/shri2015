@@ -47,18 +47,29 @@
         var audioCtx = new (window.AudioContext || window.webkitAudioContext)();
         var source;
         var audiostart, audiostop, playedtime, isPlaying = false;
+        var drawVisual;
+        var analyser = audioCtx.createAnalyser();
+        var distortion = audioCtx.createWaveShaper();
+        var gainNode = audioCtx.createGain();
+        var biquadFilter = audioCtx.createBiquadFilter();
+        var convolver = audioCtx.createConvolver();
         function dragAndDropInit() {
             $(".audio_player").draggable();
         }
         function openFile() {
             var inputFileElement = $(".inputFile")[0];
             inputFileElement.onchange = function () {
+                window.cancelAnimationFrame(drawVisual);
                 file = inputFileElement.files[0];              
                 loadAndReadFile();
                 if (isPlaying) {
                     source.stop(0);
                 }
             }
+        }
+        function connect() {
+            source.connect(analyser);
+            analyser.connect(audioCtx.destination);
         }
         function loadAndReadFile() {
             var fileReader = new FileReader();
@@ -69,52 +80,74 @@
                 audioCtx.decodeAudioData(arrayBuffer, function (decodedData) {
                     audioBuffer = decodedData;
                     source.buffer = decodedData;
-                    source.connect(audioCtx.destination);
+
+                    connect();
+                    
                     source.loop = true;
                     $("#filename").text(file.name);
                     source.start(0);
                     audiostart = audioCtx.currentTime;
                     isPlaying = true;
                     playedtime = 0.0;
+
+                    visualize();
                 });                
                 $("#play").click(function () {
                     if (!isPlaying) {
                         audiostart = audioCtx.currentTime;
                         source = audioCtx.createBufferSource();
                         source.buffer = audioBuffer;
-                        source.connect(audioCtx.destination);
+                        connect();
                         source.loop = true;
                         source.start(audioCtx.currentTime - 1, playedtime);
                         isPlaying = true;
+                        visualize();
                     }                    
                 });
                 $("#stop").click(function () {
                     if (isPlaying) {
                         audiostop = audioCtx.currentTime;
                         playedtime += audiostop - audiostart;
+                        window.cancelAnimationFrame(drawVisual);
                         source.stop(0);
                         isPlaying = false;
                     }                    
                 });
             }
         }
-        $(function () {
-            dragAndDropInit();
-            openFile();
-
+        function initVisualizer() {
             for (var i = 0; i < 32; i++) {
                 var div = $('<span/>').appendTo('#visualizer');
-                div.css({
-                    verticalAlign: 'top',
-                    display: 'inline-block',
-                    fontSize: 0,
-                    lineHeight: 0,
-                    width: '5px',
-                    height: 64 - Math.round(i * 64 / 32) + 'px',
-                    background: '#363636',
-                    borderBottom: '2px solid red'
-                });
+                div.css({ verticalAlign: 'top', display: 'inline-block', width: '5px', height: 64 + 'px',
+                    background: '#363636', borderBottom: '2px solid red' });
             }
+        }
+        function visualize() {
+            analyser.fftSize = 64;
+            var bufferLength = analyser.fftSize;
+            var dataArray = new Uint8Array(bufferLength);
+            clearRect();
+            var span = $("#visualizer span");
+
+            function draw() {
+                drawVisual = requestAnimationFrame(draw);
+
+                analyser.getByteFrequencyData(dataArray);
+
+                for (var i = 0; i < bufferLength; i++) { 
+                    $(span[i]).css("height", (64 - dataArray[i] / 4) + "px");
+                }
+            }
+
+            draw();
+        }
+        function clearRect() {
+            $("#visualizer span").each(function () { $(this).css("height", "64px"); });
+        }
+        $(function () {
+            dragAndDropInit();
+            initVisualizer();
+            openFile();            
         });
     </script>
 </head>
