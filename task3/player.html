@@ -49,10 +49,6 @@
         var audiostart, audiostop, playedtime, isPlaying = false;
         var drawVisual;
         var analyser = audioCtx.createAnalyser();
-        var distortion = audioCtx.createWaveShaper();
-        var gainNode = audioCtx.createGain();
-        var biquadFilter = audioCtx.createBiquadFilter();
-        var convolver = audioCtx.createConvolver();
         function dragAndDropInit() {
             $(".audio_player").draggable();
         }
@@ -118,7 +114,7 @@
         function initVisualizer() {
             for (var i = 0; i < 32; i++) {
                 var div = $('<span/>').appendTo('#visualizer');
-                div.css({ verticalAlign: 'top', display: 'inline-block', width: '5px', height: 64 + 'px',
+                div.css({ verticalAlign: 'top', display: 'inline-block', width: '5px', height: '64px',
                     background: '#363636', borderBottom: '2px solid red' });
             }
         }
