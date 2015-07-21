@@ -8,10 +8,13 @@
     <!--<link href="css/player.css" rel="stylesheet" />-->
     <!--<script src="scripts/player.js"></script>-->
     <style>
+        * {
+            font-family: Arial, Helvetica, sans-serif;
+        }
         .audio_player {
             position: fixed;
             width: 200px;
-            height: 200px;
+            height: 320px;
             border-radius: 5px;
             border: 1px solid black;
             background-color: #00ff90;
@@ -87,6 +90,7 @@
                     playedtime = 0.0;
 
                     visualize();
+                    equalize();
                 });                
                 $("#play").click(function () {
                     if (!isPlaying) {
@@ -97,6 +101,7 @@
                         source.loop = true;
                         source.start(audioCtx.currentTime - 1, playedtime);
                         isPlaying = true;
+                        equalize();
                         visualize();
                     }                    
                 });
@@ -113,9 +118,8 @@
         }
         function initVisualizer() {
             for (var i = 0; i < 32; i++) {
-                var div = $('<span/>').appendTo('#visualizer');
-                div.css({ verticalAlign: 'top', display: 'inline-block', width: '5px', height: '64px',
-                    background: '#363636', borderBottom: '2px solid red' });
+                var span = $('<span/>').appendTo('#visualizer');
+                span.css({ verticalAlign: 'top', display: 'inline-block', width: '5px', height: '64px', background: '#363636', borderBottom: '2px solid red' });
             }
         }
         function visualize() {
@@ -140,6 +144,63 @@
         function clearRect() {
             $("#visualizer span").each(function () { $(this).css("height", "64px"); });
         }
+        function equalize() {
+            var filters = createFilters();
+
+            // источник цепляем к первому фильтру 
+            source.connect(filters[0]);
+            // а последний фильтр - к выходу
+            filters[filters.length - 1].connect(audioCtx.destination);
+
+            $('input[type=radio][name=eqmode]').change(function () {
+                if (this.value == 'classic') {
+                    var classic = [ 3.5, 2.5, 0.6, 1.1, -1.2, -1.1, 0.0, 0.7, 1.7, 2.2 ];
+                    for (var i = 0; i < 10; i++) {
+                        filters[i].gain.value = classic[i];
+                    }
+                } else if (this.value == 'jazz') {
+                    var jazz = [3.5, 2.5, 0.6, 1.1, -1.2, -1.1, 0.0, 0.7, 1.7, 2.2];
+                    for (var i = 0; i < 10; i++) {
+                        filters[i].gain.value = jazz[i];
+                    }
+                } else if (this.value == 'pop') {
+                    var pop = [ -1.0, 1.0, 2.0, 2.3, 1.4, -0.8, -1.1, -1.2, -0.7, -0.8 ];
+                    for (var i = 0; i < 10; i++) {
+                        filters[i].gain.value = pop[i];
+                    }
+                } else if (this.value == 'rock') {
+                    var rock = [3.0, 1.5, -3.0, -4.0, -1.2, 1.1, 3.5, 4.5, 4.0, 3.5];
+                    for (var i = 0; i < 10; i++) {
+                        filters[i].gain.value = rock[i];
+                    }
+                } else {
+                    for (var i = 0; i < 10; i++) {
+                        filters[i].gain.value = 0.0;
+                    }
+                }
+            });
+        };
+        var createFilters = function () {
+            var frequencies = [60, 170, 310, 600, 1000, 3000, 6000, 12000, 14000, 16000],
+              filters = frequencies.map(createFilter);
+
+            filters.reduce(function (prev, curr) {
+                prev.connect(curr);
+                return curr;
+            });
+
+            return filters;
+        };
+        var createFilter = function (frequency) {
+            var filter = audioCtx.createBiquadFilter();
+
+            filter.type = 'peaking'; // тип фильтра
+            filter.frequency.value = frequency; // частота
+            filter.Q.value = 1; // Q-factor
+            filter.gain.value = 0;
+
+            return filter;
+        };
         $(function () {
             dragAndDropInit();
             initVisualizer();
@@ -154,8 +215,16 @@
         <input type="file" class="inputFile" />
         <input type="image" src="img/play.png" class="openFileButton" id="play" />
         <input type="image" src="img/stop.png" class="openFileButton" id="stop" />
-        <div id="filename" style="position: relative; top: 8px; left: 8px; font-family: Arial, Helvetica, sans-serif; background-color: white; border-radius: 3px; width: 180px;">...File Name...</div>
+        <div id="filename" style="position: relative; top: 8px; left: 8px; background-color: white; border-radius: 3px; width: 180px;">...File Name...</div>
         <div id="visualizer" style="position: relative; top: 16px; left: 16px; background-color: yellow; border: 1px solid white; width: 160px; height: 64px; overflow: hidden"></div>
+        <div id="equalizer" style="position: relative; top: 25px; left: 10px; border: 1px solid #696969; width: 80px; padding: 5px;">
+            <label>Equalizer:</label><br />
+            <input type="radio" name="eqmode" value="normal" checked /><label>normal</label><br />
+            <input type="radio" name="eqmode" value="classic" /><label>classic</label><br />
+            <input type="radio" name="eqmode" value="jazz" /><label>jazz</label><br />
+            <input type="radio" name="eqmode" value="rock" /><label>rock</label><br />
+            <input type="radio" name="eqmode" value="pop" /><label>pop</label><br />
+        </div>
     </div>
 </body>
 </html>
