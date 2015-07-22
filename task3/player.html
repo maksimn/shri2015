@@ -58,17 +58,26 @@
         function openFile() {
             var inputFileElement = $(".inputFile")[0];
             inputFileElement.onchange = function () {
-                window.cancelAnimationFrame(drawVisual);
-                file = inputFileElement.files[0];              
-                loadAndReadFile();
                 if (isPlaying) {
                     source.stop(0);
                 }
+                window.cancelAnimationFrame(drawVisual);
+                file = inputFileElement.files[0];              
+                loadAndReadFile();               
             }
         }
         function connect() {
             source.connect(analyser);
             analyser.connect(audioCtx.destination);
+        }
+        function checkFileFormat(filename) {
+            var supported = ['mp3', 'wav', 'ogg'];
+            var dotInd = filename.lastIndexOf('.');
+            var ext = filename.substring(dotInd + 1);
+            if (supported.indexOf(ext) > -1) {
+                return true;
+            }
+            return false;
         }
         function loadAndReadFile() {
             var fileReader = new FileReader();
@@ -83,14 +92,19 @@
                     connect();
                     
                     source.loop = true;
-                    $("#filename").text(file.name);
-                    source.start(0);
-                    audiostart = audioCtx.currentTime;
-                    isPlaying = true;
-                    playedtime = 0.0;
+                    if (checkFileFormat(file.name)) {
+                        $("#filename").text(file.name);
 
-                    visualize();
-                    equalize();
+                        source.start(0);
+                        audiostart = audioCtx.currentTime;
+                        isPlaying = true;
+                        playedtime = 0.0;
+
+                        visualize();
+                        equalize();
+                    } else {
+                        alert("This file format is not supported.");
+                    }                    
                 });                
                 $("#play").click(function () {
                     if (!isPlaying) {
@@ -146,15 +160,16 @@
         }
         function equalize() {
             var filters = createFilters();
+            
+            source.connect(filters[0]); // источник цепляем к первому фильтру             
+            filters[filters.length - 1].connect(audioCtx.destination); // а последний фильтр - к выходу
 
-            // источник цепляем к первому фильтру 
-            source.connect(filters[0]);
-            // а последний фильтр - к выходу
-            filters[filters.length - 1].connect(audioCtx.destination);
-
+            setEqualizerEffects(filters);
+        };
+        function setEqualizerEffects(filters) {
             $('input[type=radio][name=eqmode]').change(function () {
                 if (this.value == 'classic') {
-                    var classic = [ 3.5, 2.5, 0.6, 1.1, -1.2, -1.1, 0.0, 0.7, 1.7, 2.2 ];
+                    var classic = [3.5, 2.5, 0.6, 1.1, -1.2, -1.1, 0.0, 0.7, 1.7, 2.2];
                     for (var i = 0; i < 10; i++) {
                         filters[i].gain.value = classic[i];
                     }
@@ -164,7 +179,7 @@
                         filters[i].gain.value = jazz[i];
                     }
                 } else if (this.value == 'pop') {
-                    var pop = [ -1.0, 1.0, 2.0, 2.3, 1.4, -0.8, -1.1, -1.2, -0.7, -0.8 ];
+                    var pop = [-1.0, 1.0, 2.0, 2.3, 1.4, -0.8, -1.1, -1.2, -0.7, -0.8];
                     for (var i = 0; i < 10; i++) {
                         filters[i].gain.value = pop[i];
                     }
@@ -179,7 +194,7 @@
                     }
                 }
             });
-        };
+        }
         var createFilters = function () {
             var frequencies = [60, 170, 310, 600, 1000, 3000, 6000, 12000, 14000, 16000],
               filters = frequencies.map(createFilter);
