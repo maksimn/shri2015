@@ -11,7 +11,7 @@
         $("#audio_player").draggable();
     }
     function openFile() {
-        var inputFileElement = $(".inputFile")[0];
+        var inputFileElement = $("#audio_player .inputFile")[0];
         inputFileElement.onchange = function () {
             if (isPlaying) {
                 source.stop(0);
@@ -43,9 +43,9 @@
             if (dv.getString(3, dv.byteLength - 128) == 'TAG') {
                 var title = dv.getString(30, dv.tell());
                 var artist = dv.getString(30, dv.tell());
-                $('#titleAndArtistDiv').html('Artist: ' + artist + '<br /> Title: ' + title);
+                $('.titleAndArtistDiv').html('Artist: ' + artist + '<br /> Title: ' + title);
             } else {
-                $('#titleAndArtistDiv').html('');
+                $('.titleAndArtistDiv').html('');
             }
         }        
     }
@@ -65,7 +65,7 @@
                 if (checkFileFormat(file.name)) {
                     showTitleAndArtist();
 
-                    $("#filename").text(file.name);
+                    $("#audio_player .filename").text(file.name);
 
                     source.start(0);
                     audiostart = audioCtx.currentTime;
@@ -78,7 +78,7 @@
                     alert("This file format is not supported.");
                 }
             });
-            $("#play").click(function () {
+            $("#audio_player .play").click(function () {
                 if (!isPlaying) {
                     audiostart = audioCtx.currentTime;
                     source = audioCtx.createBufferSource();
@@ -91,7 +91,7 @@
                     visualize();
                 }
             });
-            $("#stop").click(function () {
+            $("#audio_player .stop").click(function () {
                 if (isPlaying) {
                     audiostop = audioCtx.currentTime;
                     playedtime += audiostop - audiostart;
@@ -104,7 +104,7 @@
     }
     function initVisualizer() {
         for (var i = 0; i < 32; i++) {
-            var span = $('<span/>').appendTo('#visualizer');
+            var span = $('<span/>').appendTo('.visualizer');
             span.css({ verticalAlign: 'top', display: 'inline-block', width: '5px', height: '64px', background: '#363636', borderBottom: '2px solid red' });
         }
     }
@@ -113,7 +113,7 @@
         var bufferLength = analyser.fftSize;
         var dataArray = new Uint8Array(bufferLength);
         clearRect();
-        var span = $("#visualizer span");
+        var span = $("#audio_player .visualizer span");
 
         function draw() {
             drawVisual = requestAnimationFrame(draw);
@@ -128,7 +128,7 @@
         draw();
     }
     function clearRect() {
-        $("#visualizer span").each(function () { $(this).css("height", "64px"); });
+        $("#audio_player .visualizer span").each(function () { $(this).css("height", "64px"); });
     }
     function equalize() {
         var filters = createFilters();

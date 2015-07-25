@@ -30,7 +30,7 @@
     width: 24px;
     opacity: 0.0;
 }
-#audio_player #equalizer {
+#audio_player .equalizer {
     position: relative;
     top: 25px;
     left: 10px;
@@ -38,7 +38,7 @@
     width: 80px;
     padding: 5px;
 }
-#audio_player #visualizer {
+#audio_player .visualizer {
     position: relative;
     top: 16px;
     left: 16px;
@@ -48,13 +48,13 @@
     height: 64px;
     overflow: hidden;
 }
-#audio_player #titleAndArtistDiv {
+#audio_player .titleAndArtistDiv {
     position: relative;
     top: 12px;
     left: 8px;
     width: 180px;
 }
-#audio_player #filename {
+#audio_player .filename {
     position: relative;
     top: 8px;
     left: 8px;
