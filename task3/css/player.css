@@ -1,7 +1,7 @@
 ﻿* {
     font-family: Arial, Helvetica, sans-serif;
 }
-.audio_player {
+#audio_player {
     position: fixed;
     width: 200px;
     height: 380px;
@@ -10,7 +10,7 @@
     background-color: #00ff90;
     overflow: hidden;
 }        
-.player_head {
+#audio_player .player_head {
     width: 198px;
     height: 14px;
     background-color: gray;
@@ -18,19 +18,19 @@
     border-top-left-radius: 5px;
     border-top-right-radius: 5px;
 }
-.openFileButton {
+#audio_player .openFileButton {
     position: relative;
     top: 8px;
     left: 8px;
 }
-.inputFile {
+#audio_player .inputFile {
     position: absolute;
     top: 26px;
     left: 8px;
     width: 24px;
     opacity: 0.0;
 }
-#equalizer {
+#audio_player #equalizer {
     position: relative;
     top: 25px;
     left: 10px;
@@ -38,7 +38,7 @@
     width: 80px;
     padding: 5px;
 }
-#visualizer {
+#audio_player #visualizer {
     position: relative;
     top: 16px;
     left: 16px;
@@ -48,13 +48,13 @@
     height: 64px;
     overflow: hidden;
 }
-#titleAndArtistDiv {
+#audio_player #titleAndArtistDiv {
     position: relative;
     top: 12px;
     left: 8px;
     width: 180px;
 }
-#filename {
+#audio_player #filename {
     position: relative;
     top: 8px;
     left: 8px;

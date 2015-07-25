@@ -8,7 +8,7 @@
     var drawVisual;
     var analyser = audioCtx.createAnalyser();
     function dragAndDropInit() {
-        $(".audio_player").draggable();
+        $("#audio_player").draggable();
     }
     function openFile() {
         var inputFileElement = $(".inputFile")[0];
