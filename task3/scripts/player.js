@@ -35,16 +35,19 @@
         return false;
     }
     function showTitleAndArtist() {
-        var dv = new jDataView(arrayBuffer);
-        // "TAG" starts at byte -128 from EOF.
-        // See http://en.wikipedia.org/wiki/ID3
-        if (dv.getString(3, dv.byteLength - 128) == 'TAG') {
-            var title = dv.getString(30, dv.tell());
-            var artist = dv.getString(30, dv.tell());
-            $('#titleAndArtistDiv').html('Artist: ' + artist + '<br /> Title: ' + title);
-        } else {
-            $('#titleAndArtistDiv').html('');
-        }
+        var is_chrome = navigator.userAgent.toLowerCase().indexOf('chrome') > -1;
+        if(is_chrome) {
+            var dv = new jDataView(arrayBuffer);
+            // "TAG" starts at byte -128 from EOF.
+            // See http://en.wikipedia.org/wiki/ID3
+            if (dv.getString(3, dv.byteLength - 128) == 'TAG') {
+                var title = dv.getString(30, dv.tell());
+                var artist = dv.getString(30, dv.tell());
+                $('#titleAndArtistDiv').html('Artist: ' + artist + '<br /> Title: ' + title);
+            } else {
+                $('#titleAndArtistDiv').html('');
+            }
+        }        
     }
     function loadAndReadFile() {
         var fileReader = new FileReader();
